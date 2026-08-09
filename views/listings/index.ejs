@@ -8,29 +8,168 @@
 </head> -->
 
 <%= layout("/layouts/boilerplate") %>
-<!-- <%= success %>   we will use this in boilerplate code -->
-<body>
-    <h3>All Listings</h3>
-    <!-- <form method="GET" action="/listings/new">
-        <button>Add New Listing</button>
-    </form> -->
-    <div class="row row-cols-lg-3 row-cols-md-2 row-cols-sm-1">
-        <% for( let listing of allListing ) { %>
-            <a href="/listings/<%= listing._id %>" class="listing-link">
-                <div class="card col listing-card " >
-                    <img src="<%= listing.image.url %>" class="card-img-top" alt="listing_img" style="height: 20rem";>
-                    <div class="card-img-overlay"></div>
-                    <div class="card-body">
-                        <p class="card-text"> <b><%= listing.title %></b> <br>
-                        &#8377; <%= listing.price.toLocaleString("en-IN")  %>/night 
-                        </p>
-                    </div>
-                </div>
-            </a>
-            
-        <% } %>
-    </div>
-  
-   
 
-</body>
+<style>
+#filters {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.filter {
+    text-align: center;
+    margin-right: 2rem;
+    margin-top: 2rem;
+    opacity: 0.7;
+}
+
+.filter:hover {
+    opacity: 1;
+    cursor: pointer;
+}
+
+.filter p {
+    font-size: 0.8rem;
+}
+
+.tax-info {
+    display: none;
+}
+
+.tax-toggle {
+    border: 1px solid black;
+    border-radius: 1rem;
+    height: 3.25rem;
+    padding: 1rem;
+    margin-left: 5rem;
+    display: flex;
+    align-items: center;
+}
+
+#mobile-filter-btn {
+    display: none;
+}
+
+/* Offcanvas ke andar filters ka layout thoda alag (vertical list) */
+#filter-offcanvas .filter {
+    display: flex;
+    align-items: center;
+    text-align: left;
+    margin-right: 0;
+    margin-top: 0;
+    margin-bottom: 1.2rem;
+    opacity: 1;
+}
+
+#filter-offcanvas .filter i {
+    width: 2rem;
+    font-size: 1.1rem;
+}
+
+#filter-offcanvas .filter p {
+    margin: 0 0 0 0.8rem;
+    font-size: 0.95rem;
+}
+
+#filter-offcanvas .tax-toggle {
+    margin-left: 0;
+    margin-top: 1.5rem;
+    height: auto;
+}
+
+@media (max-width: 576px) {
+    #filters {
+        display: none;
+    }
+
+    #mobile-filter-btn {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        border: 1px solid black;
+        border-radius: 1.5rem;
+        padding: 0.5rem 1rem;
+        margin-top: 1rem;
+        width: fit-content;
+        cursor: pointer;
+    }
+
+    .card-img-top {
+        height: 15rem !important;
+    }
+}
+</style>
+
+<!-- Ye filters ek hi baar likhe gaye hain -->
+<div id="filters">
+    <div class="filter"><div><i class="fa-solid fa-fire"></i></div><p>Trending</p></div>
+    <div class="filter"><div><i class="fa-solid fa-bed"></i></div><p>Rooms</p></div>
+    <div class="filter"><div><i class="fa-solid fa-mountain-city"></i></div><p>Iconic Cities</p></div>
+    <div class="filter"><div><i class="fa-solid fa-mountain"></i></div><p>Mountains</p></div>
+    <div class="filter"><div><i class="fa-brands fa-person-swimming"></i></div><p>Amazing Pools</p></div>
+    <div class="filter"><div><i class="fa-solid fa-campground"></i></div><p>Camping</p></div>
+    <div class="filter"><div><i class="fa-solid fa-cow"></i></div><p>Farms</p></div>
+    <div class="filter"><div><i class="fa-regular fa-snowflake"></i></div><p>Arctic</p></div>
+    <div class="filter"><div><i class="fa-solid fa-igloo"></i></div><p>Domes</p></div>
+    <div class="filter"><div><i class="fa-regular fa-ship"></i></div><p>Boats</p></div>
+
+    <div class="tax-toggle">
+        <div class="form-check-reverse form-switch">
+            <input class="form-check-input" type="checkbox" role="switch" id="switchCheckDefault">
+            <label class="form-check-label" for="switchCheckDefault">Display total after taxes</label>
+        </div>
+    </div>
+</div>
+
+<!-- Mobile: Bootstrap ka built-in trigger button (Offcanvas ke liye) -->
+<div id="mobile-filter-btn" data-bs-toggle="offcanvas" data-bs-target="#filter-offcanvas">
+    <i class="fa-solid fa-sliders"></i>
+    <span>Filters</span>
+</div>
+
+<!-- Mobile: Bootstrap Offcanvas (khaali hai abhi, JS ise fill karega) -->
+<div class="offcanvas offcanvas-start" id="filter-offcanvas">
+    <div class="offcanvas-header">
+        <h5 class="offcanvas-title">Filters</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+    </div>
+    <div class="offcanvas-body" id="filter-offcanvas-body">
+        <!-- JS yaha #filters ka content copy karega -->
+    </div>
+</div>
+
+<div class="row row-cols-lg-3 row-cols-md-2 row-cols-sm-1 mt-3">
+    <% for( let listing of allListing ) { %>
+        <a href="/listings/<%= listing._id %>" class="listing-link" style="text-decoration:none; color:inherit;">
+            <div class="card col listing-card">
+                <img src="<%= listing.image.url %>" class="card-img-top" alt="listing_img" style="height: 20rem; object-fit: cover;">
+                <div class="card-img-overlay"></div>
+                <div class="card-body">
+                    <p class="card-text"> <b><%= listing.title %></b> <br>
+                    &#8377; <%= listing.price.toLocaleString("en-IN")  %>/night 
+                    <i class="tax-info"> &nbsp; &nbsp;+18% GSTs</i>
+                    </p>
+                </div>
+            </div>
+        </a>
+    <% } %>
+</div>
+
+<script>
+    // Filters ka HTML sirf ek baar likha hai (#filters mein) -
+    // ye script usi content ko copy karke offcanvas ke andar bhi daal deta hai
+    document.getElementById("filter-offcanvas-body").innerHTML =
+        document.getElementById("filters").innerHTML;
+
+    // Dono jagah (original + offcanvas wala) tax switch ek saath kaam kare
+    function toggleTaxInfo() {
+        let taxInfo = document.getElementsByClassName("tax-info");
+        for (let info of taxInfo) {
+            info.style.display = (info.style.display !== "inline") ? "inline" : "none";
+        }
+    }
+
+    document.querySelectorAll('input[id="switchCheckDefault"]').forEach(el => {
+        el.addEventListener("click", toggleTaxInfo);
+    });
+</script>
