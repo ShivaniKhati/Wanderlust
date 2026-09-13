@@ -1,8 +1,13 @@
+require("dotenv").config();
+
+const dns = require("dns");
+dns.setServers(["1.1.1.1", "8.8.8.8"]);
+
 const mongoose = require("mongoose");
 const initData = require("./data.js");
 const Listing = require("../models/listing.js");
 
-const MONGO_URL = "mongodb://127.0.0.1:27017/wanderlust";
+const MONGO_URL = process.env.ATLASDB_URL;
 
 async function main() {
     await mongoose.connect(MONGO_URL);
@@ -16,15 +21,25 @@ main()
         console.log(err);
     });
 
+const initDB = async () => {
 
-const initDB = async ()=> {
-    await Listing.deleteMany();
-    initData.data = initData.data.map((obj) => ({
+    // Existing listing se owner ID le lenge
+    const existingListing = await Listing.findOne();
+
+    if (!existingListing) {
+        console.log("No existing listing found.");
+        return;
+    }
+
+    const newListings = initData.data.map((obj) => ({
         ...obj,
-        owner: "6a746c6a4a85409da29fee64",
+        owner: existingListing.owner,
     }));
 
-    await Listing.insertMany(initData.data);
-    console.log("data was intialized");
-}
+    // Existing listings DELETE nahi hongi
+    await Listing.insertMany(newListings);
+
+    console.log("6 new listings added successfully");
+};
+
 initDB();

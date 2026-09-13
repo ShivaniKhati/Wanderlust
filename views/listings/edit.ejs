@@ -1,7 +1,7 @@
 <%= layout("/layouts/boilerplate") %>
 
 <div class="row mt-3">
-    <div class="col-8 offset-2">
+    <div class="col-12 col-md-8 offset-md-2">
     <h3>Edit Your listing</h3>
     <form
     action="/listings/<%= listing._id %>?_method=PUT"
@@ -31,7 +31,8 @@
 
             <img
                 src="<%= originalImageUrl %>"
-                 style="width: 250px; height: auto;"
+                class="img-fluid rounded"
+                style="max-width: 250px;"
             />
         </div>
         <div class="mb-3">

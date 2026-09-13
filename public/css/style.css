@@ -65,6 +65,7 @@ body{
 .card-img-top {
     border-radius: 1rem !important;
     width: 100% !important;
+    height: 20rem !important;
     object-fit: cover !important;
 }
 
@@ -112,6 +113,48 @@ body{
 .show-card{
     padding-left: 0;
     padding-right: 0;
+}
+
+
+
+@media (max-width: 767px) {
+    .navbar {
+        height: auto;
+        padding: 0.8rem;
+    }
+
+    .search-inp {
+        padding: 0.5rem 1rem;
+    }
+
+    .search-btn {
+        padding: 0.5rem 1rem;
+    }
+
+    .show-img {
+        height: 35vh;
+    }
+
+    .btns {
+        flex-direction: column;
+        gap: 0.5rem;
+        margin: 1rem;
+    }
+
+    .btns .btn {
+        width: 100%;
+        margin: 0 !important;
+    }
+
+    .container {
+        width: 100%;
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+
+    #map {
+        height: 250px !important;
+    }
 }
 
 
